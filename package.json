@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
+    "test": "jest",
     "dev-start": "DEBUG=fungible-fair:* nodemon ./bin/www"
   },
   "dependencies": {
@@ -14,6 +15,7 @@
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {
+    "jest": "^26.6.3",
     "nodemon": "^2.0.7"
   }
 }
