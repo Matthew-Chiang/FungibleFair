@@ -8,7 +8,7 @@ function initDB(callBack) {
     return callBack(null, _db);
   }
 
-  _db = new sqlite3.Database("./database/fungible2.db", (err) => {
+  _db = new sqlite3.Database("./database/fungible.db", (err) => {
     if (err) {
       callBack(err, null);
     }
