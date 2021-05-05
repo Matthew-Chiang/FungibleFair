@@ -8,18 +8,14 @@ const usersRouter = require("./routes/users");
 
 const app = express();
 
-const { getDB, initDB } = require("./database/db");
+const { getOrCreateDB } = require("./database/db");
 
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-initDB((err) => {
-  if (err) {
-    console.log(err);
-  }
-});
+const db = getOrCreateDB();
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
