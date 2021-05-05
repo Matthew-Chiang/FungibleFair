@@ -6,7 +6,12 @@ describe("Helper functions for Users Table", () => {
   let testingDB;
   beforeEach(() => {
     testingDB = new Database(":memory:", {});
-    TestingHelpers.createUsersTable(testingDB);
+    TestingHelpers.createUserTable(testingDB);
+    TestingHelpers.createEmailIndex(testingDB);
+  });
+
+  afterEach(() => {
+    testingDB.close();
   });
 
   test("Create User", () => {
@@ -19,5 +24,30 @@ describe("Helper functions for Users Table", () => {
     });
 
     expect(info.changes).toEqual(1);
+  });
+
+  describe("Get User Tests", () => {
+    const userUUID = TestingHelpers.getUUID();
+    beforeEach(() => {
+      TestingHelpers.insertUser(testingDB, userUUID);
+    });
+
+    test("Get user by ID", () => {
+      const user = userTable.getUserByID({ userID: 1, testingDB });
+      expect(user.userID).toEqual(1);
+      expect(user.name).toEqual("name-" + userUUID);
+      expect(user.email).toEqual(userUUID + "@shopify.com");
+    });
+
+    test("Get user by Email", () => {
+      const user = userTable.getUserByEmail({
+        email: userUUID + "@shopify.com",
+        testingDB,
+      });
+
+      expect(user.userID).toEqual(1);
+      expect(user.name).toEqual("name-" + userUUID);
+      expect(user.email).toEqual(userUUID + "@shopify.com");
+    });
   });
 });

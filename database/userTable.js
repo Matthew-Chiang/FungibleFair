@@ -52,6 +52,38 @@ function insertUser(user) {
   return info;
 }
 
+function getUserByID(userQuery) {
+  const { userID } = userQuery;
+
+  let _db = db;
+  if ("testingDB" in userQuery) {
+    _db = userQuery.testingDB;
+  }
+
+  const stmt = _db.prepare("SELECT * FROM User WHERE userID = :userID");
+  const user = stmt.get({
+    userID,
+  });
+  return user;
+}
+
+function getUserByEmail(userQuery) {
+  const { email } = userQuery;
+
+  let _db = db;
+  if ("testingDB" in userQuery) {
+    _db = userQuery.testingDB;
+  }
+
+  const stmt = _db.prepare("SELECT * FROM User WHERE email = :email");
+  const user = stmt.get({
+    email,
+  });
+  return user;
+}
+
 module.exports = {
   insertUser,
+  getUserByID,
+  getUserByEmail,
 };
