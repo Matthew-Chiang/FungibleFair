@@ -1,22 +1,34 @@
-const { getDB } = require("./database/db");
+const { getOrCreateDB } = require("./db");
 
-function insertImage(options) {
+const db = getOrCreateDB();
+
+function insertImage(image) {
   /**
-   * options object
+   * image object
    * userID: Int
    * pathName: string
-   * public: boolean (optional)
+   * public: boolean (optional) (1 or 0)
    * cost: double
    */
 
-  const { userID, pathName, public, cost } = options;
+  const { userID, pathName, isPublic, cost } = image;
 
-  const db = getDB();
+  let _db = db;
+  if ("testingDB" in image) {
+    _db = image.testingDB;
+  }
 
-  db.run(
-    "INSERT INTO Image (pathName, public, cost, userID) VALUES ($pathName, $public, $cost, $userID)",
-    { pathName, public, cost, userID }
+  const stmt = _db.prepare(
+    "INSERT INTO Image (pathName, isPublic, cost, userID) VALUES (:pathName, :isPublic, :cost, :userID)"
   );
+  const info = stmt.run({
+    pathName,
+    isPublic,
+    cost,
+    userID,
+  });
+
+  return info;
 }
 
 module.exports = {

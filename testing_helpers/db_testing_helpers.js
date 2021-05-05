@@ -32,4 +32,23 @@ function insertUser(db, userUUID) {
   });
 }
 
-module.exports = { getUUID, createUserTable, createEmailIndex, insertUser };
+function createImageTable(db) {
+  const createImageTable = `CREATE TABLE "Image" (
+        "imageID"	INTEGER NOT NULL UNIQUE,
+        "pathName"	TEXT NOT NULL,
+        "isPublic"	INTEGER,
+        "userID"	INTEGER NOT NULL,
+        "cost"	REAL,
+        PRIMARY KEY("imageID" AUTOINCREMENT),
+        FOREIGN KEY("userID") REFERENCES "User"("userID")
+    )`;
+  db.exec(createImageTable);
+}
+
+module.exports = {
+  getUUID,
+  createUserTable,
+  createEmailIndex,
+  insertUser,
+  createImageTable,
+};

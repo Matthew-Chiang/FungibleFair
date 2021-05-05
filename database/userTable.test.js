@@ -2,7 +2,7 @@ const userTable = require("./userTable");
 const Database = require("better-sqlite3");
 const TestingHelpers = require("../testing_helpers/db_testing_helpers");
 
-describe("Helper functions for Users Table", () => {
+describe("Helper functions for User Table", () => {
   let testingDB;
   beforeEach(() => {
     testingDB = new Database(":memory:", {});
