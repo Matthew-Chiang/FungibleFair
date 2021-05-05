@@ -1,31 +1,21 @@
 //sqlite database
-const sqlite3 = require("sqlite3").verbose();
+const Database = require("better-sqlite3");
+var path = require("path");
 
 let _db;
 
-function initDB(callBack) {
-  if (_db) {
-    return callBack(null, _db);
-  }
-
-  _db = new sqlite3.Database("./database/fungible.db", (err) => {
-    if (err) {
-      callBack(err, null);
-    }
-    console.log("Connected to the database.");
-    callBack(null);
-  });
-}
-
-function getDB() {
+function getOrCreateDB(callBack) {
   if (_db) {
     return _db;
-  } else {
-    return null;
   }
+
+  _db = new Database(path.join(__dirname, "fungible.db"), {
+    verbose: console.log,
+  });
+
+  console.log("Connected to database");
+
+  return _db;
 }
 
-module.exports = {
-  getDB,
-  initDB,
-};
+module.exports = { getOrCreateDB };
