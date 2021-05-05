@@ -1,63 +1,55 @@
 const crypto = require("crypto");
-const { getDB } = require("./db");
+const { getOrCreateDB } = require("./db");
 
-const db = getDB();
+const db = getOrCreateDB();
 
-function insertUser(user, callBack) {
+function insertUser(user) {
   /**
    * user object
    * name: string
    * email: string
    * password: string
+   * testingDB: DB Object
    */
 
-  return new Promise((resolve, reject) => {
-    const { name, email, password } = user;
+  const { name, email, password } = user;
 
-    const passwordConfig = {
-      hashBytes: 32,
-      saltBytes: 16,
-      iterations: 100000,
-    };
+  const passwordConfig = {
+    hashBytes: 32,
+    saltBytes: 16,
+    iterations: 100000,
+  };
 
-    const salt = crypto
-      .randomBytes(passwordConfig.saltBytes)
-      .toString("base64");
+  const salt = crypto.randomBytes(passwordConfig.saltBytes).toString("base64");
 
-    const hashedPassword = crypto
-      .pbkdf2Sync(
-        password,
-        salt,
-        passwordConfig.iterations,
-        passwordConfig.hashBytes,
-        "SHA512"
-      )
-      .toString("base64");
+  const hashedPassword = crypto
+    .pbkdf2Sync(
+      password,
+      salt,
+      passwordConfig.iterations,
+      passwordConfig.hashBytes,
+      "SHA512"
+    )
+    .toString("base64");
 
-    console.log(hashedPassword);
+  let _db = db;
+  if ("testingDB" in user) {
+    _db = user.testingDB;
+  }
 
-    const db = getDB();
+  const stmt = _db.prepare(
+    "INSERT INTO User (name, email, password, passwordItr, passwordSalt) VALUES (:name, :email, :password, :passwordItr, :passwordSalt)"
+  );
 
-    db.run(
-      "INSERT INTO User (name, email, password, passwordItr, passwordSalt) VALUES ($name, $email, $password, $passwordItr, $passwordSalt)",
-      {
-        $name: name,
-        $email: email,
-        $password: hashedPassword,
-        $passwordItr: passwordConfig.iterations,
-        $passwordSalt: salt,
-      },
-      (err) => {
-        if (err) {
-          console.log(err);
-          reject(err);
-        } else {
-          console.log(this.changes);
-          resolve();
-        }
-      }
-    );
+  const info = stmt.run({
+    name: name,
+    email: email,
+    password: hashedPassword,
+    passwordItr: passwordConfig.iterations,
+    passwordSalt: salt,
   });
+
+  return info;
 }
 
 module.exports = {
