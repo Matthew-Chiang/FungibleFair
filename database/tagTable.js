@@ -36,13 +36,29 @@ function getTagByName(tagQuery) {
   }
 
   const stmt = _db.prepare("SELECT * FROM Tag WHERE tagName = :tagName");
-  const image = stmt.all({
+  const tags = stmt.all({
     tagName,
   });
-  return image;
+  return tags;
+}
+
+function getTagByImage(tagQuery) {
+  const { imageID } = tagQuery;
+
+  let _db = db;
+  if ("testingDB" in tagQuery) {
+    _db = tagQuery.testingDB;
+  }
+
+  const stmt = _db.prepare("SELECT * FROM Tag WHERE imageID = :imageID");
+  const tags = stmt.all({
+    imageID,
+  });
+  return tags;
 }
 
 module.exports = {
   insertTag,
   getTagByName,
+  getTagByImage,
 };

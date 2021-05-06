@@ -13,6 +13,7 @@ describe("Helper functions for Image Table", () => {
     TestingHelpers.createImageUserIDIndex(testingDB);
     TestingHelpers.createTagTable(testingDB);
     TestingHelpers.createTagNameIndex(testingDB);
+    TestingHelpers.createTagImageIndex(testingDB);
 
     const userUUID = TestingHelpers.getUUID();
     TestingHelpers.insertUser(testingDB, userUUID);
@@ -41,6 +42,7 @@ describe("Helper functions for Image Table", () => {
       const imageUUID2 = TestingHelpers.getUUID();
       TestingHelpers.insertImage(testingDB, imageUUID2);
       TestingHelpers.insertTag(testingDB, "imageTag", 2);
+      TestingHelpers.insertTag(testingDB, "imageTag3", 2);
 
       const imageUUID3 = TestingHelpers.getUUID();
       TestingHelpers.insertImage(testingDB, imageUUID3);
@@ -54,6 +56,16 @@ describe("Helper functions for Image Table", () => {
       });
       expect(tags.length).toEqual(2);
       expect(tags[0].tagName).toEqual("imageTag");
+    });
+
+    test("Query tags by image", () => {
+      const tags = tagTable.getTagByImage({
+        imageID: 2,
+        testingDB,
+      });
+      console.log(tags);
+      expect(tags.length).toEqual(2);
+      expect(tags[0].imageID).toEqual(2);
     });
   });
 });

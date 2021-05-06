@@ -77,6 +77,11 @@ function createTagNameIndex(db) {
   db.exec(createTagNameIndex);
 }
 
+function createTagImageIndex(db) {
+  const createTagImageIndex = `CREATE INDEX "TagByImage" ON "Tag" ( "imageID" )`;
+  db.exec(createTagImageIndex);
+}
+
 function insertTag(db, name, imageID) {
   const info = tagTable.insertTag({
     tagName: name,
@@ -95,5 +100,6 @@ module.exports = {
   insertImage,
   createTagTable,
   createTagNameIndex,
+  createTagImageIndex,
   insertTag,
 };
