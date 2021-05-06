@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const userTable = require("../database/userTable");
 const imageTable = require("../database/imageTable");
+const tagTable = require("../database/tagTable");
 
 function getUUID() {
   return uuidv4();
@@ -24,10 +25,10 @@ function createEmailIndex(db) {
   db.exec(createEmailIndex);
 }
 
-function insertUser(db, userUUID) {
+function insertUser(db, id) {
   const info = userTable.insertUser({
-    name: "name-" + userUUID,
-    email: userUUID + "@shopify.com",
+    name: "name-" + id,
+    email: id + "@shopify.com",
     password: "password1",
     testingDB: db,
   });
@@ -51,12 +52,40 @@ function createImageUserIDIndex(db) {
   db.exec(createImageUserIDIndex);
 }
 
-function insertImage(db) {
+function insertImage(db, id) {
   const info = imageTable.insertImage({
-    pathName: "/images/testImage",
+    pathName: "/images/testImage" + id,
     isPublic: 0,
     cost: 14.99,
     userID: 1,
+    testingDB: db,
+  });
+}
+
+function createTagTable(db) {
+  const createTagTable = `CREATE TABLE "Tag" ( 
+      "tagID" INTEGER NOT NULL UNIQUE, 
+      "tagName" TEXT NOT NULL, 
+      "imageID" INTEGER NOT NULL, 
+      PRIMARY KEY("tagID" AUTOINCREMENT), 
+      FOREIGN KEY("imageID") REFERENCES "Image"("imageID") )`;
+  db.exec(createTagTable);
+}
+
+function createTagNameIndex(db) {
+  const createTagNameIndex = `CREATE INDEX "TagName" ON "Tag" ( "tagName" )`;
+  db.exec(createTagNameIndex);
+}
+
+function createTagImageIndex(db) {
+  const createTagImageIndex = `CREATE INDEX "TagByImage" ON "Tag" ( "imageID" )`;
+  db.exec(createTagImageIndex);
+}
+
+function insertTag(db, name, imageID) {
+  const info = tagTable.insertTag({
+    tagName: name,
+    imageID: imageID,
     testingDB: db,
   });
 }
@@ -69,4 +98,8 @@ module.exports = {
   createImageTable,
   createImageUserIDIndex,
   insertImage,
+  createTagTable,
+  createTagNameIndex,
+  createTagImageIndex,
+  insertTag,
 };

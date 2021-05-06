@@ -34,10 +34,11 @@ describe("Helper functions for Image Table", () => {
 
   describe("Get image tests", () => {
     beforeEach(() => {
-      TestingHelpers.insertImage(testingDB);
+      TestingHelpers.insertImage(testingDB, 1);
     });
     test("Get image by userID", () => {
       const image = imageTable.getImageByUserID({ userID: 1, testingDB });
+      console.log(image);
     });
   });
 });
