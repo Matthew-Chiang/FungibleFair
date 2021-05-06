@@ -57,7 +57,7 @@ function insertImage(db, id) {
     isPublic: 0,
     cost: 14.99,
     userID: 1,
-    db,
+    testingDB: db,
   });
 }
 
