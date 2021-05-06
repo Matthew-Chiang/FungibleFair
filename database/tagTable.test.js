@@ -1,4 +1,4 @@
-const imageTable = require("./imageTable");
+const tagTable = require("./tagTable");
 const Database = require("better-sqlite3");
 const TestingHelpers = require("../testing_helpers/db_testing_helpers");
 
@@ -11,34 +11,26 @@ describe("Helper functions for Image Table", () => {
     TestingHelpers.createEmailIndex(testingDB);
     TestingHelpers.createImageTable(testingDB);
     TestingHelpers.createImageUserIDIndex(testingDB);
+    TestingHelpers.createTagTable(testingDB);
+    TestingHelpers.createTagNameIndex(testingDB);
 
     const userUUID = TestingHelpers.getUUID();
     TestingHelpers.insertUser(testingDB, userUUID);
+
+    const imageUUID = TestingHelpers.getUUID();
+    TestingHelpers.insertImage(testingDB, imageUUID);
   });
 
   afterEach(() => {
     testingDB.close();
   });
 
-  test("Insert image", () => {
-    const info = imageTable.insertImage({
-      pathName: "/images/path",
-      isPublic: 1,
-      cost: 3.14,
-      userID: 1,
+  test("Insert tag", () => {
+    const info = tagTable.insertTag({
+      tagName: "imageTag",
+      imageID: 1,
       testingDB,
     });
-
     expect(info.changes).toEqual(1);
-  });
-
-  describe("Get image tests", () => {
-    beforeEach(() => {
-      TestingHelpers.insertImage(testingDB, 1);
-    });
-    test("Get image by userID", () => {
-      const image = imageTable.getImageByUserID({ userID: 1, testingDB });
-      console.log(image);
-    });
   });
 });

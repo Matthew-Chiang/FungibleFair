@@ -3,11 +3,11 @@ const userTable = require("../database/userTable");
 const imageTable = require("../database/imageTable");
 
 function getUUID() {
-    return uuidv4();
+  return uuidv4();
 }
 
 function createUserTable(db) {
-    const createUserTable = `CREATE TABLE "User" ( 
+  const createUserTable = `CREATE TABLE "User" ( 
       "userID" INTEGER NOT NULL UNIQUE, 
       "name" TEXT NOT NULL, 
       "email" TEXT NOT NULL UNIQUE, 
@@ -16,25 +16,25 @@ function createUserTable(db) {
       "passwordSalt" TEXT NOT NULL, 
       "balance" INTEGER DEFAULT 0, 
       PRIMARY KEY("userID" AUTOINCREMENT) )`;
-    db.exec(createUserTable);
+  db.exec(createUserTable);
 }
 
 function createEmailIndex(db) {
-    const createEmailIndex = `CREATE INDEX "Email" ON "User" ( "email" )`;
-    db.exec(createEmailIndex);
+  const createEmailIndex = `CREATE INDEX "Email" ON "User" ( "email" )`;
+  db.exec(createEmailIndex);
 }
 
-function insertUser(db, userUUID) {
-    const info = userTable.insertUser({
-        name: "name-" + userUUID,
-        email: userUUID + "@shopify.com",
-        password: "password1",
-        testingDB: db,
-    });
+function insertUser(db, id) {
+  const info = userTable.insertUser({
+    name: "name-" + id,
+    email: id + "@shopify.com",
+    password: "password1",
+    testingDB: db,
+  });
 }
 
 function createImageTable(db) {
-    const createImageTable = `CREATE TABLE "Image" (
+  const createImageTable = `CREATE TABLE "Image" (
         "imageID"	INTEGER NOT NULL UNIQUE,
         "pathName"	TEXT NOT NULL,
         "isPublic"	INTEGER,
@@ -43,30 +43,47 @@ function createImageTable(db) {
         PRIMARY KEY("imageID" AUTOINCREMENT),
         FOREIGN KEY("userID") REFERENCES "User"("userID")
     )`;
-    db.exec(createImageTable);
+  db.exec(createImageTable);
 }
 
 function createImageUserIDIndex(db) {
-    const createImageUserIDIndex = `CREATE INDEX "ImageByUserID" ON "Image" ( "userID" )`;
-    db.exec(createImageUserIDIndex);
+  const createImageUserIDIndex = `CREATE INDEX "ImageByUserID" ON "Image" ( "userID" )`;
+  db.exec(createImageUserIDIndex);
 }
 
-function insertImage(db) {
-    const info = imageTable.insertImage({
-        pathName: "/images/testImage",
-        isPublic: 0,
-        cost: 14.99,
-        userID: 1,
-        db,
-    });
+function insertImage(db, id) {
+  const info = imageTable.insertImage({
+    pathName: "/images/testImage" + id,
+    isPublic: 0,
+    cost: 14.99,
+    userID: 1,
+    db,
+  });
+}
+
+function createTagTable(db) {
+  const createTagTable = `CREATE TABLE "Tag" ( 
+      "tagID" INTEGER NOT NULL UNIQUE, 
+      "tagName" TEXT NOT NULL, 
+      "imageID" INTEGER NOT NULL, 
+      PRIMARY KEY("tagID" AUTOINCREMENT), 
+      FOREIGN KEY("imageID") REFERENCES "Image"("imageID") )`;
+  db.exec(createTagTable);
+}
+
+function createTagNameIndex(db) {
+  const createTagNameIndex = `CREATE INDEX "TagName" ON "Tag" ( "tagName" )`;
+  db.exec(createTagNameIndex);
 }
 
 module.exports = {
-    getUUID,
-    createUserTable,
-    createEmailIndex,
-    insertUser,
-    createImageTable,
-    createImageUserIDIndex,
-    insertImage,
+  getUUID,
+  createUserTable,
+  createEmailIndex,
+  insertUser,
+  createImageTable,
+  createImageUserIDIndex,
+  insertImage,
+  createTagTable,
+  createTagNameIndex,
 };
