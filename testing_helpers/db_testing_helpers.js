@@ -1,6 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const userTable = require("../database/userTable");
 const imageTable = require("../database/imageTable");
+const tagTable = require("../database/tagTable");
 
 function getUUID() {
   return uuidv4();
@@ -76,6 +77,14 @@ function createTagNameIndex(db) {
   db.exec(createTagNameIndex);
 }
 
+function insertTag(db, name, imageID) {
+  const info = tagTable.insertTag({
+    tagName: name,
+    imageID: imageID,
+    testingDB: db,
+  });
+}
+
 module.exports = {
   getUUID,
   createUserTable,
@@ -86,4 +95,5 @@ module.exports = {
   insertImage,
   createTagTable,
   createTagNameIndex,
+  insertTag,
 };

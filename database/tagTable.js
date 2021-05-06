@@ -27,6 +27,22 @@ function insertTag(tag) {
   return info;
 }
 
+function getTagByName(tagQuery) {
+  const { tagName } = tagQuery;
+
+  let _db = db;
+  if ("testingDB" in tagQuery) {
+    _db = tagQuery.testingDB;
+  }
+
+  const stmt = _db.prepare("SELECT * FROM Tag WHERE tagName = :tagName");
+  const image = stmt.all({
+    tagName,
+  });
+  return image;
+}
+
 module.exports = {
   insertTag,
+  getTagByName,
 };
