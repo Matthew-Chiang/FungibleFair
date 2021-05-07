@@ -13,7 +13,7 @@ exports.verify = (req, res, next) => {
   if (payload.exp > new Date().getTime() / 1000) {
     const user = userTable.getUserByID({ userID: payload.userID });
 
-    req.body.user = user;
+    req.currentUser = user;
 
     if (user.email == payload.email) {
       next();
