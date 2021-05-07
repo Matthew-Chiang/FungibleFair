@@ -60,6 +60,7 @@ function getUserByEmail(userQuery) {
   const user = stmt.get({
     email,
   });
+
   return user;
 }
 
