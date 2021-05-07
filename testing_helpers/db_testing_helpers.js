@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require("uuid");
 const userTable = require("../database/userTable");
 const imageTable = require("../database/imageTable");
 const tagTable = require("../database/tagTable");
+const userHelpers = require("../helpers/userHelpers");
 
 function getUUID() {
   return uuidv4();
@@ -26,10 +27,13 @@ function createEmailIndex(db) {
 }
 
 function insertUser(db, id) {
-  const info = userTable.insertUser({
+  const password = "password1";
+  const passwordInfo = userHelpers.getPasswordHash(password);
+
+  userTable.insertUser({
     name: "name-" + id,
     email: id + "@shopify.com",
-    password: "password1",
+    ...passwordInfo,
     testingDB: db,
   });
 }

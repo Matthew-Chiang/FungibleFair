@@ -1,4 +1,3 @@
-const crypto = require("crypto");
 const { getOrCreateDB } = require("./db");
 
 const db = getOrCreateDB();
@@ -12,25 +11,7 @@ function insertUser(user) {
    * testingDB: DB Object
    */
 
-  const { name, email, password } = user;
-
-  const passwordConfig = {
-    hashBytes: 32,
-    saltBytes: 16,
-    iterations: 100000,
-  };
-
-  const salt = crypto.randomBytes(passwordConfig.saltBytes).toString("base64");
-
-  const hashedPassword = crypto
-    .pbkdf2Sync(
-      password,
-      salt,
-      passwordConfig.iterations,
-      passwordConfig.hashBytes,
-      "SHA512"
-    )
-    .toString("base64");
+  const { name, email, hashedPassword, passwordItr, passwordSalt } = user;
 
   let _db = db;
   if ("testingDB" in user) {
@@ -45,8 +26,8 @@ function insertUser(user) {
     name: name,
     email: email,
     password: hashedPassword,
-    passwordItr: passwordConfig.iterations,
-    passwordSalt: salt,
+    passwordItr: passwordItr,
+    passwordSalt: passwordSalt,
   });
 
   return info;

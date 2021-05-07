@@ -18,6 +18,6 @@ app.use(cookieParser());
 const db = getOrCreateDB();
 
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/user", usersRouter);
 
 module.exports = app;

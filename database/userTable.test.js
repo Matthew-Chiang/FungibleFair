@@ -1,6 +1,7 @@
 const userTable = require("./userTable");
 const Database = require("better-sqlite3");
 const TestingHelpers = require("../testing_helpers/db_testing_helpers");
+const userHelpers = require("../helpers/userHelpers");
 
 describe("Helper functions for User Table", () => {
   let testingDB;
@@ -16,10 +17,14 @@ describe("Helper functions for User Table", () => {
 
   test("Create User", () => {
     const userUUID = TestingHelpers.getUUID();
+
+    const password = "password1";
+    const passwordInfo = userHelpers.getPasswordHash(password);
+
     const info = userTable.insertUser({
       name: "name-" + userUUID,
       email: userUUID + "@shopify.com",
-      password: "password1",
+      ...passwordInfo,
       testingDB,
     });
 

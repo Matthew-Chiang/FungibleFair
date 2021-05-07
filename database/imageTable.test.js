@@ -41,7 +41,6 @@ describe("Helper functions for Image Table", () => {
       const images = imageTable.getImageByUserID({ userID: 1, testingDB });
       expect(images.length).toEqual(2);
       expect(images[0].userID).toEqual(1);
-      console.log(images);
     });
   });
 });
