@@ -62,3 +62,4 @@ typings/
 
 images/*
 tempImages/*
+database/fungible.db
