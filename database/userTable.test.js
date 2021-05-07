@@ -1,7 +1,7 @@
 const userTable = require("./userTable");
 const Database = require("better-sqlite3");
 const TestingHelpers = require("../testing_helpers/db_testing_helpers");
-const crypto = require("crypto");
+const userHelpers = require("../helpers/userHelpers");
 
 describe("Helper functions for User Table", () => {
   let testingDB;
@@ -19,33 +19,14 @@ describe("Helper functions for User Table", () => {
     const userUUID = TestingHelpers.getUUID();
 
     const password = "password1";
+    const passwordInfo = userHelpers.getPasswordHash(password);
 
-    const passwordConfig = {
-      hashBytes: 32,
-      saltBytes: 16,
-      iterations: 100000,
-    };
-
-    const salt = crypto
-      .randomBytes(passwordConfig.saltBytes)
-      .toString("base64");
-
-    const hashedPassword = crypto
-      .pbkdf2Sync(
-        password,
-        salt,
-        passwordConfig.iterations,
-        passwordConfig.hashBytes,
-        "SHA512"
-      )
-      .toString("base64");
+    console.log(passwordInfo);
 
     const info = userTable.insertUser({
       name: "name-" + userUUID,
       email: userUUID + "@shopify.com",
-      hashedPassword,
-      passwordItr: passwordConfig.iterations,
-      passwordSalt: salt,
+      ...passwordInfo,
       testingDB,
     });
 

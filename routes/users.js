@@ -1,37 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const crypto = require("crypto");
 const userTable = require("../database/userTable");
+const userHelpers = require("../helpers/userHelpers");
 
 router.put("/", function (req, res, next) {
   // create user
   const { name, email, password } = req.body;
 
-  const passwordConfig = {
-    hashBytes: 32,
-    saltBytes: 16,
-    iterations: 100000,
-  };
+  const passwordInfo = userHelpers.getPasswordHash(password);
 
-  const salt = crypto.randomBytes(passwordConfig.saltBytes).toString("base64");
-
-  const hashedPassword = crypto
-    .pbkdf2Sync(
-      password,
-      salt,
-      passwordConfig.iterations,
-      passwordConfig.hashBytes,
-      "SHA512"
-    )
-    .toString("base64");
   let info;
   try {
     info = userTable.insertUser({
       name,
       email,
-      hashedPassword,
-      passwordItr: passwordConfig.iterations,
-      passwordSalt: salt,
+      ...passwordInfo,
     });
   } catch (err) {
     throw err;
