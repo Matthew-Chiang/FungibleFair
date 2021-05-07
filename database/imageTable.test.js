@@ -35,10 +35,13 @@ describe("Helper functions for Image Table", () => {
   describe("Get image tests", () => {
     beforeEach(() => {
       TestingHelpers.insertImage(testingDB, 1);
+      TestingHelpers.insertImage(testingDB, 2);
     });
     test("Get image by userID", () => {
-      const image = imageTable.getImageByUserID({ userID: 1, testingDB });
-      console.log(image);
+      const images = imageTable.getImageByUserID({ userID: 1, testingDB });
+      expect(images.length).toEqual(2);
+      expect(images[0].userID).toEqual(1);
+      console.log(images);
     });
   });
 });
