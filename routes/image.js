@@ -2,7 +2,8 @@ var express = require("express");
 var router = express.Router();
 
 const path = require("path");
-const fs = require("fs");
+const fs = require("fs").promises;
+var http = require("http");
 const multer = require("multer");
 const upload = multer({ dest: "tempImages/" });
 
@@ -25,6 +26,27 @@ router.post("/", upload.single("image"), async function (req, res, next) {
     next(err);
   }
 });
+
+router.get("/", async function (req, res, next) {
+  res.set("Content-Type", "image/jpg");
+  const file = await fs.readFile(
+    "images/80277c6a-91f3-4ecb-b33b-1025c182795c.jpg"
+  );
+
+  // res.send(file);
+
+  const files = [
+    "images/80277c6a-91f3-4ecb-b33b-1025c182795c.jpg",
+    "images/b65f0a85-9d68-4dba-bcb2-8c9319fa7d44.jpg",
+  ];
+  files.map(async (url) => {
+    return await fs.readFile(url);
+  });
+
+  await Promise.all(files);
+  res.send(files);
+});
+
 router.post("/bulk", upload.array("images"), async function (req, res, next) {
   try {
     let { isPublic, cost } = req.body;
@@ -36,8 +58,6 @@ router.post("/bulk", upload.array("images"), async function (req, res, next) {
       userID: user.userID,
       isPublic: parseInt(isPublic),
     };
-
-    console.log(userParams);
 
     req.files.forEach(async (file, index) => {
       status = await imageHelper.processImage(file, {
