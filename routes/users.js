@@ -51,6 +51,7 @@ router.post("/login", function (req, res, next) {
     res.cookie("jwt", token, {
       cookieOptions,
     });
+
     res.send("Successful Login");
   }
 });
