@@ -11,14 +11,18 @@ exports.verify = (req, res, next) => {
   const payload = userHelpers.verifyAccessToken(accessToken);
 
   if (payload.exp > new Date().getTime() / 1000) {
-    const user = userTable.getUserByID({ userID: payload.userID });
+    try {
+      const user = userTable.getUserByID({ userID: payload.userID });
 
-    req.currentUser = user;
+      req.currentUser = user;
 
-    if (user.email == payload.email) {
-      next();
-    } else {
-      return res.status(403).send("Token email invalid");
+      if (user.email == payload.email) {
+        next();
+      } else {
+        return res.status(403).send("Token email invalid");
+      }
+    } catch (err) {
+      return res.status(403).send(err);
     }
   } else {
     return res.status(403).send("Token expired");
