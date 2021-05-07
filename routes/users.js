@@ -27,32 +27,37 @@ router.post("/login", function (req, res, next) {
   const { email, password } = req.body;
 
   const loginUser = userTable.getUserByEmail({ email });
+
   console.log(loginUser);
 
-  const hashedPassword = userHelpers.hashPasswordWithSalt(
-    password,
-    loginUser.passwordSalt,
-    loginUser.passwordItr
-  );
-
-  if (hashedPassword !== loginUser.password) {
-    res.status(401).send("Invalid email or password");
-  } else {
-    const cookieOptions = {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-    };
-    const token = userHelpers.generateAccessToken(
-      loginUser.userID,
-      loginUser.email
+  if (loginUser) {
+    const hashedPassword = userHelpers.hashPasswordWithSalt(
+      password,
+      loginUser.passwordSalt,
+      loginUser.passwordItr
     );
 
-    res.cookie("jwt", token, {
-      cookieOptions,
-    });
+    if (hashedPassword !== loginUser.password) {
+      res.status(401).send("Invalid email or password");
+    } else {
+      const cookieOptions = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      };
+      const token = userHelpers.generateAccessToken(
+        loginUser.userID,
+        loginUser.email
+      );
 
-    res.send("Successful Login");
+      res.cookie("jwt", token, {
+        cookieOptions,
+      });
+
+      res.send("Successful Login");
+    }
+  } else {
+    return res.status(401).send("Invalid email or password");
   }
 });
 
