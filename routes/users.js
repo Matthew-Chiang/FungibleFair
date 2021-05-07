@@ -29,7 +29,9 @@ router.put("/", function (req, res, next) {
     info = userTable.insertUser({
       name,
       email,
-      password,
+      hashedPassword,
+      passwordItr: passwordConfig.iterations,
+      passwordSalt: salt,
     });
   } catch (err) {
     throw err;

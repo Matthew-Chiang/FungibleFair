@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require("uuid");
 const userTable = require("../database/userTable");
 const imageTable = require("../database/imageTable");
 const tagTable = require("../database/tagTable");
+const crypto = require("crypto");
 
 function getUUID() {
   return uuidv4();
@@ -26,10 +27,32 @@ function createEmailIndex(db) {
 }
 
 function insertUser(db, id) {
-  const info = userTable.insertUser({
+  const password = "password1";
+
+  const passwordConfig = {
+    hashBytes: 32,
+    saltBytes: 16,
+    iterations: 100000,
+  };
+
+  const salt = crypto.randomBytes(passwordConfig.saltBytes).toString("base64");
+
+  const hashedPassword = crypto
+    .pbkdf2Sync(
+      password,
+      salt,
+      passwordConfig.iterations,
+      passwordConfig.hashBytes,
+      "SHA512"
+    )
+    .toString("base64");
+
+  userTable.insertUser({
     name: "name-" + id,
     email: id + "@shopify.com",
-    password: "password1",
+    hashedPassword,
+    passwordItr: passwordConfig.iterations,
+    passwordSalt: salt,
     testingDB: db,
   });
 }
