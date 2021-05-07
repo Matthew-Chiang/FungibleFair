@@ -21,8 +21,6 @@ describe("Helper functions for User Table", () => {
     const password = "password1";
     const passwordInfo = userHelpers.getPasswordHash(password);
 
-    console.log(passwordInfo);
-
     const info = userTable.insertUser({
       name: "name-" + userUUID,
       email: userUUID + "@shopify.com",

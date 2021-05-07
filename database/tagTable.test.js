@@ -63,7 +63,6 @@ describe("Helper functions for Tag Table", () => {
         imageID: 2,
         testingDB,
       });
-      console.log(tags);
       expect(tags.length).toEqual(2);
       expect(tags[0].imageID).toEqual(2);
     });
