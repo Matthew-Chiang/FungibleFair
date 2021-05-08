@@ -39,15 +39,14 @@ function insertUser(db, id) {
 }
 
 function createImageTable(db) {
-  const createImageTable = `CREATE TABLE "Image" (
-        "imageID"	INTEGER NOT NULL UNIQUE,
-        "pathName"	TEXT NOT NULL,
-        "isPublic"	INTEGER,
-        "userID"	INTEGER NOT NULL,
-        "cost"	REAL,
-        PRIMARY KEY("imageID" AUTOINCREMENT),
-        FOREIGN KEY("userID") REFERENCES "User"("userID")
-    )`;
+  const createImageTable = `CREATE TABLE "Image" ( 
+    "imageID" INTEGER NOT NULL UNIQUE, 
+    "pathName" TEXT NOT NULL, 
+    "isPublic" INTEGER, "userID" INTEGER NOT NULL, 
+    "cost" REAL, 
+    "name" TEXT NOT NULL, 
+    PRIMARY KEY("imageID" AUTOINCREMENT), 
+    FOREIGN KEY("userID") REFERENCES "User"("userID") )`;
   db.exec(createImageTable);
 }
 
@@ -62,6 +61,7 @@ function insertImage(db, id) {
     isPublic: 0,
     cost: 14.99,
     userID: 1,
+    name: "image name " + id,
     testingDB: db,
   });
 }

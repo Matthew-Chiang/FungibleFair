@@ -33,18 +33,7 @@ router.get("/", async function (req, res, next) {
     "images/80277c6a-91f3-4ecb-b33b-1025c182795c.jpg"
   );
 
-  // res.send(file);
-
-  const files = [
-    "images/80277c6a-91f3-4ecb-b33b-1025c182795c.jpg",
-    "images/b65f0a85-9d68-4dba-bcb2-8c9319fa7d44.jpg",
-  ];
-  files.map(async (url) => {
-    return await fs.readFile(url);
-  });
-
-  await Promise.all(files);
-  res.send(files);
+  res.send(file);
 });
 
 router.post("/bulk", upload.array("images"), async function (req, res, next) {
