@@ -51,5 +51,11 @@ describe("Helper functions for Image Table", () => {
       expect(images.length).toEqual(1);
       expect(images[0].userID).toEqual(1);
     });
+    test("Get all public images", () => {
+      const images = imageTable.getAllPublicImages({
+        testingDB,
+      });
+      expect(images.length).toEqual(2);
+    });
   });
 });

@@ -63,8 +63,20 @@ function getImageByImageName(imageQuery) {
   return image;
 }
 
+function getAllPublicImages(imageQuery) {
+  let _db = db;
+  if ("testingDB" in imageQuery) {
+    _db = imageQuery.testingDB;
+  }
+
+  const stmt = _db.prepare("SELECT * FROM Image WHERE isPublic = 1");
+  const image = stmt.all();
+  return image;
+}
+
 module.exports = {
   insertImage,
   getImageByUserID,
   getImageByImageName,
+  getAllPublicImages,
 };

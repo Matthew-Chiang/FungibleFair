@@ -1,8 +1,7 @@
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const imageTable = require("../database/imageTable");
-const { rename, unlink } = require("fs").promises;
-const fs = require("fs");
+const fs = require("fs").promises;
 
 async function processImage(file, userParams) {
   // renaming the downloaded file into the images folder
@@ -11,7 +10,7 @@ async function processImage(file, userParams) {
   const targetPath = path.join(__dirname, `../images/${imageUUID}.jpg`);
   if (path.extname(file.originalname).toLowerCase() === ".jpg") {
     try {
-      await rename(tempPath, targetPath);
+      await fs.rename(tempPath, targetPath);
 
       const info = imageTable.insertImage({
         pathName: targetPath,
@@ -24,7 +23,7 @@ async function processImage(file, userParams) {
     }
   } else {
     try {
-      await unlink(tempPath);
+      await fs.unlink(tempPath);
       throw new Error("Invalid file types uploaded");
     } catch (err) {
       throw err;
@@ -51,4 +50,39 @@ function getPathAndNameForImages(images) {
   return zipParams;
 }
 
-module.exports = { processImage, getPathAndNameForImages };
+async function sendImages(res, images) {
+  if (images.length == 1) {
+    const path = images[0].pathName;
+    res.set("Content-Type", "image/jpg");
+    const file = await fs.readFile(path);
+    res.send(file);
+  } else {
+    const zipParams = getPathAndNameForImages(images);
+    res.zip(zipParams);
+  }
+}
+
+async function sendImageLinks(req, res, images) {
+  const serverURL = req.protocol + "://" + req.get("host");
+
+  const imageLinks = images.map((image) => {
+    const urlSplitSlash = image.pathName.split("/");
+    const fileName = urlSplitSlash[urlSplitSlash.length - 1];
+    const fullUrl = serverURL + "/imageLink/" + fileName;
+
+    return {
+      image: fullUrl,
+      name: image.name,
+      isPublic: image.isPublic,
+    };
+  });
+
+  res.send({ images: imageLinks });
+}
+
+module.exports = {
+  processImage,
+  getPathAndNameForImages,
+  sendImages,
+  sendImageLinks,
+};

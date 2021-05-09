@@ -56,7 +56,7 @@ function createImageUserIDIndex(db) {
 function insertImage(db, id) {
   const info = imageTable.insertImage({
     pathName: "/images/testImage" + id,
-    isPublic: 0,
+    isPublic: 1,
     userID: 1,
     name: "image name " + id,
     testingDB: db,
