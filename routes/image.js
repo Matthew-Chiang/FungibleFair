@@ -1,23 +1,26 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 
 const path = require("path");
 const fs = require("fs").promises;
-var http = require("http");
+const http = require("http");
+const zip = require("express-zip");
 const multer = require("multer");
 const upload = multer({ dest: "tempImages/" });
+const imageTable = require("../database/imageTable");
 
 const imageHelper = require("../helpers/imageHelper");
 
 router.post("/", upload.single("image"), async function (req, res, next) {
   try {
-    const { isPublic, cost } = req.body;
+    const { isPublic, cost, name } = req.body;
     const user = req.currentUser;
 
     userParams = {
       userID: user.userID,
       isPublic: parseInt(isPublic),
       cost: parseFloat(cost),
+      name,
     };
     const status = await imageHelper.processImage(req.file, userParams);
     console.log(status);
@@ -27,42 +30,45 @@ router.post("/", upload.single("image"), async function (req, res, next) {
   }
 });
 
-router.get("/", async function (req, res, next) {
-  res.set("Content-Type", "image/jpg");
-  const file = await fs.readFile(
-    "images/80277c6a-91f3-4ecb-b33b-1025c182795c.jpg"
-  );
+router.get("/:imageName", async function (req, res, next) {
+  const { imageName } = req.params;
+  const user = req.currentUser;
 
-  // res.send(file);
-
-  const files = [
-    "images/80277c6a-91f3-4ecb-b33b-1025c182795c.jpg",
-    "images/b65f0a85-9d68-4dba-bcb2-8c9319fa7d44.jpg",
-  ];
-  files.map(async (url) => {
-    return await fs.readFile(url);
+  const images = imageTable.getImageByImageName({
+    userID: user.userID,
+    name: imageName,
   });
 
-  await Promise.all(files);
-  res.send(files);
+  if (images.length == 1) {
+    const path = images[0].pathName;
+    res.set("Content-Type", "image/jpg");
+    const file = await fs.readFile(path);
+    res.send(file);
+  } else {
+    const zipParams = imageHelper.getPathAndNameForImages(images);
+    res.zip(zipParams);
+  }
 });
 
 router.post("/bulk", upload.array("images"), async function (req, res, next) {
   try {
-    let { isPublic, cost } = req.body;
+    let { isPublic, cost, name } = req.body;
     const user = req.currentUser;
 
     cost = JSON.parse(cost);
+    isPublic = JSON.parse(isPublic);
+    name = JSON.parse(name);
 
     userParams = {
       userID: user.userID,
-      isPublic: parseInt(isPublic),
     };
 
     req.files.forEach(async (file, index) => {
       status = await imageHelper.processImage(file, {
         ...userParams,
         cost: cost[index],
+        isPublic: isPublic[index],
+        name: name[index],
       });
     });
 

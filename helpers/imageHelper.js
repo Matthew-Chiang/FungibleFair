@@ -2,6 +2,7 @@ const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const imageTable = require("../database/imageTable");
 const { rename, unlink } = require("fs").promises;
+const fs = require("fs");
 
 async function processImage(file, userParams) {
   // renaming the downloaded file into the images folder
@@ -31,4 +32,23 @@ async function processImage(file, userParams) {
   }
 }
 
-module.exports = { processImage };
+function getPathAndNameForImages(images) {
+  fileNames = {};
+  const zipParams = images.map((image) => {
+    const urlSplitByDot = image.pathName.split(".");
+    const extension = "." + urlSplitByDot[urlSplitByDot.length - 1];
+
+    let fileName;
+    if (image.name in fileNames) {
+      fileNames[image.name]++;
+      fileName = image.name + fileNames[image.name];
+    } else {
+      fileName = image.name;
+      fileNames[image.name] = 1;
+    }
+    return { path: image.pathName, name: fileName + extension };
+  });
+  return zipParams;
+}
+
+module.exports = { processImage, getPathAndNameForImages };

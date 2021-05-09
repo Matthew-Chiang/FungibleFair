@@ -11,7 +11,7 @@ function insertImage(image) {
    * cost: double
    */
 
-  const { userID, pathName, isPublic, cost } = image;
+  const { userID, pathName, isPublic, cost, name } = image;
 
   let _db = db;
   if ("testingDB" in image) {
@@ -19,13 +19,14 @@ function insertImage(image) {
   }
 
   const stmt = _db.prepare(
-    "INSERT INTO Image (pathName, isPublic, cost, userID) VALUES (:pathName, :isPublic, :cost, :userID)"
+    "INSERT INTO Image (pathName, isPublic, cost, userID, name) VALUES (:pathName, :isPublic, :cost, :userID, :name)"
   );
   const info = stmt.run({
     pathName,
     isPublic,
     cost,
     userID,
+    name,
   });
 
   return info;
@@ -46,7 +47,26 @@ function getImageByUserID(imageQuery) {
   return image;
 }
 
+function getImageByImageName(imageQuery) {
+  const { userID, name } = imageQuery;
+
+  let _db = db;
+  if ("testingDB" in imageQuery) {
+    _db = imageQuery.testingDB;
+  }
+
+  const stmt = _db.prepare(
+    "SELECT * FROM Image WHERE userID = :userID AND name = :name"
+  );
+  const image = stmt.all({
+    userID,
+    name,
+  });
+  return image;
+}
+
 module.exports = {
   insertImage,
   getImageByUserID,
+  getImageByImageName,
 };

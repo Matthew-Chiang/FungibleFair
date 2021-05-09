@@ -26,6 +26,7 @@ describe("Helper functions for Image Table", () => {
       isPublic: 1,
       cost: 3.14,
       userID: 1,
+      name: "test Image",
       testingDB,
     });
 
@@ -40,6 +41,15 @@ describe("Helper functions for Image Table", () => {
     test("Get image by userID", () => {
       const images = imageTable.getImageByUserID({ userID: 1, testingDB });
       expect(images.length).toEqual(2);
+      expect(images[0].userID).toEqual(1);
+    });
+    test("Get image by name", () => {
+      const images = imageTable.getImageByImageName({
+        userID: 1,
+        name: "image name 1",
+        testingDB,
+      });
+      expect(images.length).toEqual(1);
       expect(images[0].userID).toEqual(1);
     });
   });
