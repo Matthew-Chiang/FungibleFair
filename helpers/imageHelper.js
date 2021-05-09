@@ -17,7 +17,7 @@ async function processImage(file, userParams) {
         ...userParams,
       });
 
-      return "File uploaded!";
+      return info;
     } catch (err) {
       throw err;
     }
