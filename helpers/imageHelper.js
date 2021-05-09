@@ -4,12 +4,24 @@ const imageTable = require("../database/imageTable");
 const fs = require("fs").promises;
 const zip = require("express-zip");
 
+const acceptedFileExt = {
+  ".apng": "image/apng",
+  ".avif": "image/avif",
+  ".gif": "image/gif",
+  ".jpg": "image/jpg",
+  ".jpeg": "image/jpeg",
+  ".png": "image/png",
+  ".svg": "image/svg",
+  ".webp": "image/webp",
+};
+
 async function processImage(file, userParams) {
   // renaming the downloaded file into the images folder
   const tempPath = file.path;
   const imageUUID = uuidv4();
-  const targetPath = path.join(__dirname, `../images/${imageUUID}.jpg`);
-  if (path.extname(file.originalname).toLowerCase() === ".jpg") {
+  const extension = path.extname(file.originalname).toLowerCase();
+  const targetPath = path.join(__dirname, `../images/${imageUUID}${extension}`);
+  if (extension in acceptedFileExt) {
     try {
       await fs.rename(tempPath, targetPath);
 
@@ -35,8 +47,7 @@ async function processImage(file, userParams) {
 function getPathAndNameForImages(images) {
   fileNames = {};
   const zipParams = images.map((image) => {
-    const urlSplitByDot = image.pathName.split(".");
-    const extension = "." + urlSplitByDot[urlSplitByDot.length - 1];
+    const extension = "." + image.pathName.split(".").pop();
 
     let fileName;
     if (image.name in fileNames) {
@@ -55,7 +66,9 @@ async function sendImages(res, images) {
   if (images.length == 1) {
     try {
       const path = images[0].pathName;
-      res.set("Content-Type", "image/jpg");
+      const ext = "." + path.split(".").pop();
+      console.log(ext);
+      res.set("Content-Type", acceptedFileExt[ext]);
       const file = await fs.readFile(path);
       res.send(file);
     } catch (err) {
@@ -71,8 +84,7 @@ async function sendImageLinks(req, res, images) {
   const serverURL = req.protocol + "://" + req.get("host");
 
   const imageLinks = images.map((image) => {
-    const urlSplitSlash = image.pathName.split("/");
-    const fileName = urlSplitSlash[urlSplitSlash.length - 1];
+    const fileName = image.pathName.split("/").pop();
     const fullUrl = serverURL + "/imageLink/" + fileName;
 
     return {
