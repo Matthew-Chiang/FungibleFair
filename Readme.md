@@ -71,7 +71,7 @@ Get all public images regardless of ownership.
 
 ### Image Routes (download)
 
-Get all images with a specific name under your user. Returns either the image file or a zip folder depending on how many images you’re requesting
+These endpoints would be used if a user wants to download one or many images. Each endpoint will return either the image file or a zip folder depending on how many images you’re requesting.
 
 `GET /image/name/:imageName`
 
