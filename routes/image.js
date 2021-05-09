@@ -63,16 +63,7 @@ router.get("/name/:imageName", async function (req, res, next) {
     userID: user.userID,
     name: imageName,
   });
-
-  if (images.length == 1) {
-    const path = images[0].pathName;
-    res.set("Content-Type", "image/jpg");
-    const file = await fs.readFile(path);
-    res.send(file);
-  } else {
-    const zipParams = imageHelper.getPathAndNameForImages(images);
-    res.zip(zipParams);
-  }
+  imageHelper.sendImages(res, images);
 });
 
 router.get("/link/name/:imageName", function (req, res, next) {
@@ -83,24 +74,7 @@ router.get("/link/name/:imageName", function (req, res, next) {
     userID: user.userID,
     name: imageName,
   });
-
-  const serverURL = req.protocol + "://" + req.get("host");
-
-  console.log(serverURL);
-
-  const imageLinks = images.map((image) => {
-    const urlSplitSlash = image.pathName.split("/");
-    const fileName = urlSplitSlash[urlSplitSlash.length - 1];
-    const fullUrl = serverURL + "/imageLink/" + fileName;
-
-    return {
-      image: fullUrl,
-      name: image.name,
-      isPublic: image.isPublic,
-    };
-  });
-
-  res.send({ images: imageLinks });
+  imageHelper.sendImageLinks(req, res, images);
 });
 
 router.get("/all", async function (req, res, next) {
@@ -110,16 +84,7 @@ router.get("/all", async function (req, res, next) {
     userID: user.userID,
   });
 
-  if (images.length == 1) {
-    const path = images[0].pathName;
-    res.set("Content-Type", "image/jpg");
-    const file = await fs.readFile(path);
-    res.send(file);
-  } else {
-    console.log(images);
-    const zipParams = imageHelper.getPathAndNameForImages(images);
-    res.zip(zipParams);
-  }
+  imageHelper.sendImages(res, images);
 });
 
 router.get("/link/all", async function (req, res, next) {
@@ -129,23 +94,19 @@ router.get("/link/all", async function (req, res, next) {
     userID: user.userID,
   });
 
-  const serverURL = req.protocol + "://" + req.get("host");
+  imageHelper.sendImageLinks(req, res, images);
+});
 
-  console.log(serverURL);
+router.get("/public", async function (req, res, next) {
+  const images = imageTable.getAllPublicImages({});
 
-  const imageLinks = images.map((image) => {
-    const urlSplitSlash = image.pathName.split("/");
-    const fileName = urlSplitSlash[urlSplitSlash.length - 1];
-    const fullUrl = serverURL + "/imageLink/" + fileName;
+  imageHelper.sendImages(res, images);
+});
 
-    return {
-      image: fullUrl,
-      name: image.name,
-      isPublic: image.isPublic,
-    };
-  });
+router.get("/link/public", async function (req, res, next) {
+  const images = imageTable.getAllPublicImages({});
 
-  res.send({ images: imageLinks });
+  imageHelper.sendImageLinks(req, res, images);
 });
 
 module.exports = router;
