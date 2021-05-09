@@ -49,6 +49,14 @@ describe("Helper functions for Tag Table", () => {
       TestingHelpers.insertTag(testingDB, "imageTag2", 3);
     });
 
+    test("Query tags by id", () => {
+      const tag = tagTable.getTagByID({
+        tagID: 1,
+        testingDB,
+      });
+      expect(tag.tagName).toEqual("imageTag");
+    });
+
     test("Query tags by name", () => {
       const tags = tagTable.getTagByName({
         tagName: "imageTag",

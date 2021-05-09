@@ -27,6 +27,48 @@ function insertTag(tag) {
   return info;
 }
 
+function updateTag(updateTag) {
+  /**
+   * tag object
+   * tagID: int
+   * tagName: string
+   */
+
+  const { tagID, tagName } = updateTag;
+
+  let _db = db;
+  if ("testingDB" in updateTag) {
+    _db = updateTag.testingDB;
+  }
+  const tag = getTagByID({ tagID });
+
+  if (tag) {
+    const stmt = _db.prepare(
+      "UPDATE Tag SET tagName = :tagName WHERE tagID = :tagID"
+    );
+    const info = stmt.run({
+      tagName,
+      tagID,
+    });
+    return info;
+  }
+}
+
+function getTagByID(tagQuery) {
+  const { tagID } = tagQuery;
+
+  let _db = db;
+  if ("testingDB" in tagQuery) {
+    _db = tagQuery.testingDB;
+  }
+
+  const stmt = _db.prepare("SELECT * FROM Tag WHERE tagID = :tagID");
+  const tag = stmt.get({
+    tagID,
+  });
+  return tag;
+}
+
 function getTagByName(tagQuery) {
   const { tagName } = tagQuery;
 
@@ -59,6 +101,8 @@ function getTagByImage(tagQuery) {
 
 module.exports = {
   insertTag,
+  updateTag,
+  getTagByID,
   getTagByName,
   getTagByImage,
 };
