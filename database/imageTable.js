@@ -47,7 +47,7 @@ function getImageByUserID(imageQuery) {
   return image;
 }
 
-function getImageName(imageQuery) {
+function getImageByImageName(imageQuery) {
   const { userID, name } = imageQuery;
 
   let _db = db;
@@ -68,5 +68,5 @@ function getImageName(imageQuery) {
 module.exports = {
   insertImage,
   getImageByUserID,
-  getImageName,
+  getImageByImageName,
 };

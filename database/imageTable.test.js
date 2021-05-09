@@ -44,7 +44,7 @@ describe("Helper functions for Image Table", () => {
       expect(images[0].userID).toEqual(1);
     });
     test("Get image by name", () => {
-      const images = imageTable.getImageName({
+      const images = imageTable.getImageByImageName({
         userID: 1,
         name: "image name 1",
         testingDB,
