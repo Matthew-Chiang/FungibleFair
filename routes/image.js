@@ -29,7 +29,33 @@ router.post("/", upload.single("image"), async function (req, res, next) {
   }
 });
 
-router.get("/:imageName", async function (req, res, next) {
+router.post("/bulk", upload.array("images"), async function (req, res, next) {
+  try {
+    let { isPublic, name } = req.body;
+    const user = req.currentUser;
+
+    isPublic = JSON.parse(isPublic);
+    name = JSON.parse(name);
+
+    userParams = {
+      userID: user.userID,
+    };
+
+    req.files.forEach(async (file, index) => {
+      status = await imageHelper.processImage(file, {
+        ...userParams,
+        isPublic: isPublic[index],
+        name: name[index],
+      });
+    });
+
+    res.send("Files uploaded successfully");
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get("/name/:imageName", async function (req, res, next) {
   const { imageName } = req.params;
   const user = req.currentUser;
 
@@ -49,7 +75,7 @@ router.get("/:imageName", async function (req, res, next) {
   }
 });
 
-router.get("/link/:imageName", function (req, res, next) {
+router.get("/link/name/:imageName", function (req, res, next) {
   const { imageName } = req.params;
   const user = req.currentUser;
 
@@ -77,30 +103,49 @@ router.get("/link/:imageName", function (req, res, next) {
   res.send({ images: imageLinks });
 });
 
-router.post("/bulk", upload.array("images"), async function (req, res, next) {
-  try {
-    let { isPubli, name } = req.body;
-    const user = req.currentUser;
+router.get("/all", async function (req, res, next) {
+  const user = req.currentUser;
 
-    isPublic = JSON.parse(isPublic);
-    name = JSON.parse(name);
+  const images = imageTable.getImageByUserID({
+    userID: user.userID,
+  });
 
-    userParams = {
-      userID: user.userID,
-    };
-
-    req.files.forEach(async (file, index) => {
-      status = await imageHelper.processImage(file, {
-        ...userParams,
-        isPublic: isPublic[index],
-        name: name[index],
-      });
-    });
-
-    res.send("Files uploaded successfully");
-  } catch (err) {
-    next(err);
+  if (images.length == 1) {
+    const path = images[0].pathName;
+    res.set("Content-Type", "image/jpg");
+    const file = await fs.readFile(path);
+    res.send(file);
+  } else {
+    console.log(images);
+    const zipParams = imageHelper.getPathAndNameForImages(images);
+    res.zip(zipParams);
   }
+});
+
+router.get("/link/all", async function (req, res, next) {
+  const user = req.currentUser;
+
+  const images = imageTable.getImageByUserID({
+    userID: user.userID,
+  });
+
+  const serverURL = req.protocol + "://" + req.get("host");
+
+  console.log(serverURL);
+
+  const imageLinks = images.map((image) => {
+    const urlSplitSlash = image.pathName.split("/");
+    const fileName = urlSplitSlash[urlSplitSlash.length - 1];
+    const fullUrl = serverURL + "/imageLink/" + fileName;
+
+    return {
+      image: fullUrl,
+      name: image.name,
+      isPublic: image.isPublic,
+    };
+  });
+
+  res.send({ images: imageLinks });
 });
 
 module.exports = router;
