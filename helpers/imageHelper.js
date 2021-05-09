@@ -17,8 +17,6 @@ async function processImage(file, userParams) {
         ...userParams,
       });
 
-      console.log(info);
-
       return info;
     } catch (err) {
       throw err;
