@@ -1,6 +1,10 @@
-#Fungible Fair
+# Fungible Fair
 
-a website to store Non-Fungible Tokens (NFT's) in a not so fungible way.
+A website to store Non-Fungible Tokens (NFT's) in a not so fungible way.
+
+## Table of Contents
+
+[API Documentation](#API Documentation)
 
 ## API Documentation
 
