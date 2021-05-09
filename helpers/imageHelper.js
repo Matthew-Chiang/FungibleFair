@@ -2,6 +2,7 @@ const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const imageTable = require("../database/imageTable");
 const fs = require("fs").promises;
+const zip = require("express-zip");
 
 async function processImage(file, userParams) {
   // renaming the downloaded file into the images folder
