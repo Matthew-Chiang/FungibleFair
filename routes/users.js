@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const userTable = require("../database/userTable");
 const userHelpers = require("../helpers/userHelpers");
+const jwt = require("jsonwebtoken");
 
 router.put("/", function (req, res, next) {
   // create user
@@ -58,6 +59,22 @@ router.post("/login", function (req, res, next) {
     }
   } else {
     return res.status(401).send("Invalid email or password");
+  }
+});
+
+router.delete("/logout", function (req, res, next) {
+  const accessToken = req.cookies["jwt"];
+
+  try {
+    if (accessToken) {
+      payload = userHelpers.verifyAccessToken(accessToken);
+      res.clearCookie("jwt");
+      res.send("Logged out successfully");
+    } else {
+      res.status(403).send("No JWT found");
+    }
+  } catch (err) {
+    throw err;
   }
 });
 
