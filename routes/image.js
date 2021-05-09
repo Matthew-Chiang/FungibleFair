@@ -1,13 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const path = require("path");
-const fs = require("fs").promises;
-const http = require("http");
-const zip = require("express-zip");
 const multer = require("multer");
 const upload = multer({ dest: "tempImages/" });
 const imageTable = require("../database/imageTable");
+const tagTable = require("../database/tagTable");
 
 const imageHelper = require("../helpers/imageHelper");
 
@@ -16,14 +13,20 @@ router.post("/", upload.single("image"), async function (req, res, next) {
     const { isPublic, name } = req.body;
     const user = req.currentUser;
 
+    const tags = JSON.parse(req.body.tags);
+
     userParams = {
       userID: user.userID,
       isPublic: parseInt(isPublic),
       name,
     };
     const status = await imageHelper.processImage(req.file, userParams);
-    console.log(status);
-    res.send(status);
+
+    tags.forEach((tag) => {
+      tagTable.insertTag({ tagName: tag, imageID: status.lastInsertRowid });
+    });
+
+    res.send("File uploaded!");
   } catch (err) {
     next(err);
   }
@@ -31,11 +34,12 @@ router.post("/", upload.single("image"), async function (req, res, next) {
 
 router.post("/bulk", upload.array("images"), async function (req, res, next) {
   try {
-    let { isPublic, name } = req.body;
+    let { isPublic, name, tags } = req.body;
     const user = req.currentUser;
 
     isPublic = JSON.parse(isPublic);
     name = JSON.parse(name);
+    tags = JSON.parse(tags);
 
     userParams = {
       userID: user.userID,
@@ -46,6 +50,10 @@ router.post("/bulk", upload.array("images"), async function (req, res, next) {
         ...userParams,
         isPublic: isPublic[index],
         name: name[index],
+      });
+
+      tags[index].forEach((tag) => {
+        tagTable.insertTag({ tagName: tag, imageID: status.lastInsertRowid });
       });
     });
 
