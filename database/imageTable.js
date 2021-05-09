@@ -8,10 +8,9 @@ function insertImage(image) {
    * userID: Int
    * pathName: string
    * public: boolean (optional) (1 or 0)
-   * cost: double
    */
 
-  const { userID, pathName, isPublic, cost, name } = image;
+  const { userID, pathName, isPublic, name } = image;
 
   let _db = db;
   if ("testingDB" in image) {
@@ -19,12 +18,11 @@ function insertImage(image) {
   }
 
   const stmt = _db.prepare(
-    "INSERT INTO Image (pathName, isPublic, cost, userID, name) VALUES (:pathName, :isPublic, :cost, :userID, :name)"
+    "INSERT INTO Image (pathName, isPublic, userID, name) VALUES (:pathName, :isPublic, :userID, :name)"
   );
   const info = stmt.run({
     pathName,
     isPublic,
-    cost,
     userID,
     name,
   });

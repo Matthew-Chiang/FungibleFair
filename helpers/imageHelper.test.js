@@ -8,7 +8,6 @@ describe("Image Helpers", () => {
         pathName: "images/imageID.jpg",
         isPublic: 1,
         userID: 1,
-        cost: 23,
         name: "shopify",
       },
       {
@@ -16,7 +15,6 @@ describe("Image Helpers", () => {
         pathName: "images/imageID2.jpg",
         isPublic: 1,
         userID: 1,
-        cost: 23,
         name: "shopify",
       },
       {
@@ -24,7 +22,6 @@ describe("Image Helpers", () => {
         pathName: "images/imageID3.jpg",
         isPublic: 0,
         userID: 1,
-        cost: 23,
         name: "shopify",
       },
     ];

@@ -24,7 +24,6 @@ describe("Helper functions for Image Table", () => {
     const info = imageTable.insertImage({
       pathName: "/images/path",
       isPublic: 1,
-      cost: 3.14,
       userID: 1,
       name: "test Image",
       testingDB,

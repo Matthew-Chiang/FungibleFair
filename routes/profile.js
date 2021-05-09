@@ -10,7 +10,6 @@ router.get("/", function (req, res, next) {
 
   profile.name = user.name;
   profile.email = user.email;
-  profile.balance = user.balance;
 
   const images = imageTable.getImageByUserID({ userID: user.userID });
   profile.numImages = images.length;

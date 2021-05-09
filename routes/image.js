@@ -13,13 +13,12 @@ const imageHelper = require("../helpers/imageHelper");
 
 router.post("/", upload.single("image"), async function (req, res, next) {
   try {
-    const { isPublic, cost, name } = req.body;
+    const { isPublic, name } = req.body;
     const user = req.currentUser;
 
     userParams = {
       userID: user.userID,
       isPublic: parseInt(isPublic),
-      cost: parseFloat(cost),
       name,
     };
     const status = await imageHelper.processImage(req.file, userParams);
@@ -70,7 +69,6 @@ router.get("/link/:imageName", function (req, res, next) {
 
     return {
       image: fullUrl,
-      cost: image.cost,
       name: image.name,
       isPublic: image.isPublic,
     };
@@ -81,10 +79,9 @@ router.get("/link/:imageName", function (req, res, next) {
 
 router.post("/bulk", upload.array("images"), async function (req, res, next) {
   try {
-    let { isPublic, cost, name } = req.body;
+    let { isPubli, name } = req.body;
     const user = req.currentUser;
 
-    cost = JSON.parse(cost);
     isPublic = JSON.parse(isPublic);
     name = JSON.parse(name);
 
@@ -95,7 +92,6 @@ router.post("/bulk", upload.array("images"), async function (req, res, next) {
     req.files.forEach(async (file, index) => {
       status = await imageHelper.processImage(file, {
         ...userParams,
-        cost: cost[index],
         isPublic: isPublic[index],
         name: name[index],
       });

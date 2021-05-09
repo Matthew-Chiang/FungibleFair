@@ -16,7 +16,6 @@ function createUserTable(db) {
       "password" TEXT NOT NULL, 
       "passwordItr" INTEGER NOT NULL, 
       "passwordSalt" TEXT NOT NULL, 
-      "balance" INTEGER DEFAULT 0, 
       PRIMARY KEY("userID" AUTOINCREMENT) )`;
   db.exec(createUserTable);
 }
@@ -43,7 +42,6 @@ function createImageTable(db) {
     "imageID" INTEGER NOT NULL UNIQUE, 
     "pathName" TEXT NOT NULL, 
     "isPublic" INTEGER, "userID" INTEGER NOT NULL, 
-    "cost" REAL, 
     "name" TEXT NOT NULL, 
     PRIMARY KEY("imageID" AUTOINCREMENT), 
     FOREIGN KEY("userID") REFERENCES "User"("userID") )`;
@@ -59,7 +57,6 @@ function insertImage(db, id) {
   const info = imageTable.insertImage({
     pathName: "/images/testImage" + id,
     isPublic: 0,
-    cost: 14.99,
     userID: 1,
     name: "image name " + id,
     testingDB: db,
