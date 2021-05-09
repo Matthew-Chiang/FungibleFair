@@ -16,6 +16,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.use("/imageLink", express.static("images"));
+
 app.use("/", indexRouter);
 app.use("/user", usersRouter);
 app.use("/profile", verify, profileRouter);
