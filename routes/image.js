@@ -85,6 +85,38 @@ router.get("/link/name/:imageName", function (req, res, next) {
   imageHelper.sendImageLinks(req, res, images);
 });
 
+router.get("/tag/:tagName", async function (req, res, next) {
+  const { tagName } = req.params;
+  const user = req.currentUser;
+
+  const tags = tagTable.getTagByName({ tagName });
+  const images = [];
+
+  tags.forEach((tag) => {
+    const image = imageTable.getImageByID({ imageID: tag.imageID });
+    if (image.userID === user.userID) {
+      images.push(image);
+    }
+  });
+  imageHelper.sendImages(res, images);
+});
+
+router.get("/link/tag/:tagName", async function (req, res, next) {
+  const { tagName } = req.params;
+  const user = req.currentUser;
+
+  const tags = tagTable.getTagByName({ tagName });
+  const images = [];
+
+  tags.forEach((tag) => {
+    const image = imageTable.getImageByID({ imageID: tag.imageID });
+    if (image.userID === user.userID) {
+      images.push(image);
+    }
+  });
+  imageHelper.sendImageLinks(req, res, images);
+});
+
 router.get("/all", async function (req, res, next) {
   const user = req.currentUser;
 
