@@ -30,6 +30,21 @@ function insertImage(image) {
   return info;
 }
 
+function getImageByID(imageQuery) {
+  const { imageID } = imageQuery;
+
+  let _db = db;
+  if ("testingDB" in imageQuery) {
+    _db = imageQuery.testingDB;
+  }
+
+  const stmt = _db.prepare("SELECT * FROM Image WHERE imageID = :imageID");
+  const image = stmt.get({
+    imageID,
+  });
+  return image;
+}
+
 function getImageByUserID(imageQuery) {
   const { userID } = imageQuery;
 
@@ -74,9 +89,24 @@ function getAllPublicImages(imageQuery) {
   return image;
 }
 
+function deleteImageByID(imageQuery) {
+  const { imageID } = imageQuery;
+
+  let _db = db;
+  if ("testingDB" in imageQuery) {
+    _db = imageQuery.testingDB;
+  }
+
+  const stmt = _db.prepare("DELETE FROM Image WHERE imageID = :imageID");
+  const info = stmt.run({ imageID });
+  return info;
+}
+
 module.exports = {
   insertImage,
+  getImageByID,
   getImageByUserID,
   getImageByImageName,
   getAllPublicImages,
+  deleteImageByID,
 };

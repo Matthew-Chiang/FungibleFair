@@ -37,6 +37,10 @@ describe("Helper functions for Image Table", () => {
       TestingHelpers.insertImage(testingDB, 1);
       TestingHelpers.insertImage(testingDB, 2);
     });
+    test("Get image by id", () => {
+      const image = imageTable.getImageByID({ imageID: 1, testingDB });
+      expect(image.imageID).toEqual(1);
+    });
     test("Get image by userID", () => {
       const images = imageTable.getImageByUserID({ userID: 1, testingDB });
       expect(images.length).toEqual(2);
@@ -56,6 +60,16 @@ describe("Helper functions for Image Table", () => {
         testingDB,
       });
       expect(images.length).toEqual(2);
+    });
+  });
+
+  describe("Delete image tests", () => {
+    beforeEach(() => {
+      TestingHelpers.insertImage(testingDB, 1);
+    });
+    test("Delete image", () => {
+      const info = imageTable.deleteImageByID({ imageID: 1, testingDB });
+      expect(info.changes).toEqual(1);
     });
   });
 });

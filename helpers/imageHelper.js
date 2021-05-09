@@ -52,10 +52,14 @@ function getPathAndNameForImages(images) {
 
 async function sendImages(res, images) {
   if (images.length == 1) {
-    const path = images[0].pathName;
-    res.set("Content-Type", "image/jpg");
-    const file = await fs.readFile(path);
-    res.send(file);
+    try {
+      const path = images[0].pathName;
+      res.set("Content-Type", "image/jpg");
+      const file = await fs.readFile(path);
+      res.send(file);
+    } catch (err) {
+      throw err;
+    }
   } else {
     const zipParams = getPathAndNameForImages(images);
     res.zip(zipParams);
@@ -71,6 +75,7 @@ async function sendImageLinks(req, res, images) {
     const fullUrl = serverURL + "/imageLink/" + fileName;
 
     return {
+      id: image.imageID,
       image: fullUrl,
       name: image.name,
       isPublic: image.isPublic,
@@ -80,9 +85,18 @@ async function sendImageLinks(req, res, images) {
   res.send({ images: imageLinks });
 }
 
+async function removeImageFile(path) {
+  try {
+    await fs.unlink(path);
+  } catch (err) {
+    throw err;
+  }
+}
+
 module.exports = {
   processImage,
   getPathAndNameForImages,
   sendImages,
   sendImageLinks,
+  removeImageFile,
 };

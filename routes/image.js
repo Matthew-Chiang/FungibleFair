@@ -109,4 +109,17 @@ router.get("/link/public", async function (req, res, next) {
   imageHelper.sendImageLinks(req, res, images);
 });
 
+router.delete("/id/:imageID", function (req, res, next) {
+  const { imageID } = req.params;
+
+  const image = imageTable.getImageByID({ imageID });
+  if (image) {
+    imageTable.deleteImageByID({ imageID });
+    imageHelper.removeImageFile(image.pathName);
+    res.send("Deleted image");
+  } else {
+    res.status(400).send("Invalid image id");
+  }
+});
+
 module.exports = router;
