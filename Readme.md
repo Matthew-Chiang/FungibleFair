@@ -7,6 +7,7 @@ The easiest way to interface with the backend is through an API client like [Ins
 ## Table of Contents
 
 [Quickstart](#quickstart-guide)
+[Tests](#tests)
 [API Documentation](#api-documentation)
 
 - [File Types Supported](#file-types-supported)
@@ -38,10 +39,24 @@ cd FungibleFair
 npm install
 ```
 
-##### 3. Run!
+##### 3. Start the server
 
 ```bash
 npm start
+```
+
+##### 4. Insomnia
+
+1. In the top right hand corner, click on the purple create button
+2. Click the import from file button and import the file in `insomnia/Insomnia_Sample.json`
+3. Play around to your heart's content!
+
+## Tests
+
+Unit tests were written for this project - to run all tests, use
+
+```
+npm test
 ```
 
 ## API Documentation
