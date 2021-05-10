@@ -29,8 +29,6 @@ router.post("/login", function (req, res, next) {
 
   const loginUser = userTable.getUserByEmail({ email });
 
-  console.log(loginUser);
-
   if (loginUser) {
     const hashedPassword = userHelpers.hashPasswordWithSalt(
       password,

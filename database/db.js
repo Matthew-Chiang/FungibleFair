@@ -9,9 +9,7 @@ function getOrCreateDB(callBack) {
     return _db;
   }
 
-  _db = new Database(path.join(__dirname, "fungible.db"), {
-    verbose: console.log,
-  });
+  _db = new Database(path.join(__dirname, "fungible.db"), {});
 
   console.log("Connected to database");
 

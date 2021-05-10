@@ -67,7 +67,7 @@ async function sendImages(res, images) {
     try {
       const path = images[0].pathName;
       const ext = "." + path.split(".").pop();
-      console.log(ext);
+
       res.set("Content-Type", acceptedFileExt[ext]);
       const file = await fs.readFile(path);
       res.send(file);
