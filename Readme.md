@@ -2,10 +2,14 @@
 
 A website to store Non-Fungible Tokens (NFT's) in a not so fungible way.
 
+The easiest way to interface with the backend is through an API client like [Insomnia](https://insomnia.rest/) or [Postman](https://www.postman.com/). The client will deal with all authentication tokens. An insommnia project has been included for convenience.
+
 ## Table of Contents
 
+[Quickstart](#quickstart-guide)
 [API Documentation](#api-documentation)
 
+- [File Types Supported](#file-types-supported)
 - [User Routes](#user-routes)
 - [Profile Routes](#profile-routes)
 - [Image Routes](#image-routes)
@@ -13,13 +17,31 @@ A website to store Non-Fungible Tokens (NFT's) in a not so fungible way.
 - [Image Routes (download)](#image-routes-download)
 - [Tag Routes](#tag-routes)
 
+## Quickstart Guide
+
+1. Clone the repository
+
 ## API Documentation
+
+### File Types Supported
+
+Most [common image file types](https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types) are supported
+
+- .apng
+- .avif
+- .gif
+- .jpg / .jpeg
+- .png
+- .svg
+- .webp
 
 ### User Routes
 
+The following three routes deal with authentication. Sessions are kept through a JWT that the server sends to the client through the `Set-Cookie` field. For all routes except for the user routes, an accompanying JWT will be rquired to access the endpoints.
+
 `POST /user`
 
-Creates a user
+Creates a user.
 
 `POST /user/login`
 
@@ -97,4 +119,4 @@ Returns all tags on the imageID.
 
 `PUT /tag/id/:tagID/:tagName`
 
-Updates tag
+Updates tagName
