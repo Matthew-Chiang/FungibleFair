@@ -2,8 +2,8 @@ var express = require("express");
 var router = express.Router();
 const tagTable = require("../database/tagTable");
 
-router.put("/id/:tagID/:tagName", function (req, res, next) {
-  const { tagName, tagID } = req.params;
+router.put("/", function (req, res, next) {
+  const { tagName, tagID } = req.body;
 
   const info = tagTable.updateTag({ tagName, tagID });
   res.send("Added/Updated tags");
