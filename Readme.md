@@ -19,7 +19,30 @@ The easiest way to interface with the backend is through an API client like [Ins
 
 ## Quickstart Guide
 
-1. Clone the repository
+Before you start, you should have node installed on your computer.
+
+##### 0. (Optional) Install Insomnia
+
+You can download the software [here](https://insomnia.rest/download)
+
+##### 1. Clone the repository
+
+```bash
+git clone https://github.com/Matthew-Chiang/FungibleFair.git
+cd FungibleFair
+```
+
+##### 2. Install dependencies
+
+```bash
+npm install
+```
+
+##### 3. Run!
+
+```bash
+npm start
+```
 
 ## API Documentation
 
