@@ -23,7 +23,7 @@ Before you start, you should have node installed on your computer.
 
 ##### 0. (Optional) Install Insomnia
 
-You can download the software [here](https://insomnia.rest/download)
+You can download the software [here](https://insomnia.rest/download).
 
 ##### 1. Clone the repository
 
